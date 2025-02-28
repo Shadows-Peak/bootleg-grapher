@@ -61,3 +61,10 @@ body {
     top: 0;
     left: 0;
 }
+.version-number {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    font-family: monospace;
+    color: #000;
+}

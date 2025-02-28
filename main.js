@@ -1,4 +1,28 @@
+const version = '1.0.1';
+const versionTitle = 'Establish Graph Visual Framework'
+
+
+
 const definedList = [];
+
+class FUNCTION {
+    constructor(functionName, functionVariable, functionDefinition) {
+        this.functionName = functionName;
+        this.functionVariable = functionVariable;
+        this.functionDefinition = functionDefinition;
+    }
+
+    evaluate(value) {
+        const variable = this.functionVariable;
+        const expression = this.functionDefinition.replace(variable, value);
+        expression = expression.replace('^', '**');
+        return eval(expression);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('version-number').textContent = `V${version} - ${new Date().getFullYear()} : ${versionTitle}`;
+});
 
 document.querySelector('.command-line').addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
@@ -23,7 +47,14 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
             ctx.strokeStyle = 'red';
             ctx.lineWidth = 2;
             ctx.stroke();
-        } else if (input === 'graph') {
+        } else if (input.startsWith('graph ')) {
+            const FunctionName = input.split(' ')[1];
+            const FunctionGrabbed = definedList.find(func => func.functionName === FunctionName);
+            if (!FunctionGrabbed) {
+                messageBox.textContent = 'Function not defined';
+                infoBox.textContent = 'Nothing is being drawn';
+                return;
+            }
             messageBox.textContent = 'Graphing y = x^3';
             infoBox.textContent = 'Drawing y = x^3';
 
@@ -31,12 +62,10 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
             ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear previous drawings
             ctx.beginPath();
             ctx.strokeStyle = 'blue';
-            ctx.lineWidth = 2;
-
-            const Function = input => Math.pow(input, 3);
+            ctx.lineWidth = 2;;
 
             for (let x = -canvas.width / 2; x <= canvas.width / 2; x++) {
-                const y = Function(x) / Math.pow(canvas.width / 2, 2); // Scale the curve to fit the canvas
+                const y = FunctionGrabbed.evaluate(x) / Math.pow(canvas.width / 2, 2); // Scale the curve to fit the canvas
                 if (x === -canvas.width / 2) {
                     ctx.moveTo(canvas.width / 2 + x, canvas.height / 2 - y);
                 } else {
@@ -56,10 +85,18 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
             }
             infoBox.textContent = 'Nothing is being drawn';
         } else if (input.startsWith('define ')) {
-            const parameter = input.split(' ')[1];
-            definedList.push(parameter);
+            // EXAMPLE INPUT => 'define FUNC f(x) := x^2'
+            const parameters = input.split(' ').splice(1);
+            if (parameters[0] === 'FUNC') { // Defining a function
+                const functionName = parameters[1].split('(')[0];
+                const functionVariable = parameters[1].replace(/[()]/g, '').replace(functionName, '');
+                const functionExpression = parameters[3];
+                const newFunction = new FUNCTION(functionName, functionVariable, functionExpression);
+                definedList.push(newFunction);
+            }
+            definedList.push(parameters);
             messageBox.textContent = `Define command executed with parameter: ${parameter}`;
-            infoBox.textContent = `Defining: ${parameter}`;
+            infoBox.textContent = `Defining: ${parameters}`;
             definitionsBox.textContent = `Defined parameters: ${definedList.join(', ')}`;
         } else {
             messageBox.textContent = 'Unrecognized command. Did you mean "help" or "test"?';
