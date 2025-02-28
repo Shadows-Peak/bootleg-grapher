@@ -21,6 +21,27 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
             ctx.strokeStyle = 'red';
             ctx.lineWidth = 2;
             ctx.stroke();
+        } else if (input === 'graph') {
+            messageBox.textContent = 'Graphing y = x^3';
+            infoBox.textContent = 'Drawing y = x^3';
+
+            // Draw y = x^3
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear previous drawings
+            ctx.beginPath();
+            ctx.strokeStyle = 'blue';
+            ctx.lineWidth = 2;
+
+            const Function = x => Math.pow(x, 3);
+
+            for (let x = -canvas.width / 2; x <= canvas.width / 2; x++) {
+                const y = Function / Math.pow(canvas.width / 2, 2); // Scale the curve to fit the canvas
+                if (x === -canvas.width / 2) {
+                    ctx.moveTo(canvas.width / 2 + x, canvas.height / 2 - y);
+                } else {
+                    ctx.lineTo(canvas.width / 2 + x, canvas.height / 2 - y);
+                }
+            }
+            ctx.stroke();
         } else {
             messageBox.textContent = 'Unrecognized command. Did you mean "help" or "test"?';
             infoBox.textContent = 'Nothing is being drawn';
