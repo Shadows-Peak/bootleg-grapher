@@ -2,12 +2,17 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
     if (event.key === 'Enter') {
         const input = event.target.value.trim().toLowerCase();
         const messageBox = document.getElementById('message-box');
-        const canvas = document.getElementById('diagonal-line');
+        const infoBox = document.getElementById('info-box');
+        const canvas = document.getElementById('draw-space');
         const ctx = canvas.getContext('2d');
+
         if (input === 'help') {
             messageBox.textContent = 'Available commands: help, test';
+            infoBox.textContent = 'Nothing is being drawn';
         } else if (input === 'test') {
             messageBox.textContent = 'Test command executed';
+            infoBox.textContent = 'Drawing red diagonal line';
+
             // Draw red diagonal line
             ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear previous drawings
             ctx.beginPath();
@@ -18,6 +23,7 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
             ctx.stroke();
         } else {
             messageBox.textContent = 'Unrecognized command. Did you mean "help" or "test"?';
+            infoBox.textContent = 'Nothing is being drawn';
         }
         event.target.value = ''; // Clear the input field
     }
