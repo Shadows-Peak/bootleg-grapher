@@ -4,65 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Web Interface</title>
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f0f0f0;
-        }
-        .square {
-            width: 300px;
-            height: 300px;
-            background-color: #4CAF50;
-            margin-bottom: 20px;
-        }
-        .command-line {
-            width: 80%;
-            max-width: 600px;
-            height: 40px;
-            border: 2px solid #000;
-            background-color: #000;
-            color: #0f0;
-            font-family: monospace;
-            padding: 5px;
-            box-sizing: border-box;
-        }
-        .message-box {
-            width: 80%;
-            max-width: 600px;
-            border: 2px solid #000;
-            background-color: #fff;
-            color: #000;
-            font-family: monospace;
-            padding: 10px;
-            box-sizing: border-box;
-            margin-top: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="square"></div>
+    <div class="square">
+        <canvas id="diagonal-line" width="300" height="300"></canvas>
+    </div>
     <input type="text" class="command-line" placeholder="Enter command here...">
     <div class="message-box" id="message-box"></div>
-    <script>
-        document.querySelector('.command-line').addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                const input = event.target.value.trim().toLowerCase();
-                const messageBox = document.getElementById('message-box');
-                if (input === 'help') {
-                    messageBox.textContent = 'Available commands: help, test';
-                } else if (input === 'test') {
-                    messageBox.textContent = 'Test command executed';
-                } else {
-                    messageBox.textContent = 'Unrecognized command. Did you mean "help" or "test"?';
-                }
-                event.target.value = ''; // Clear the input field
-            }
-        });
-    </script>
+    <script src="main.js"></script>
 </body>
 </html>
