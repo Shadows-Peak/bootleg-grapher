@@ -8,7 +8,6 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
 
         if (input === 'help') {
             messageBox.textContent = 'Available commands: help, test';
-            infoBox.textContent = 'Nothing is being drawn';
         } else if (input === 'test') {
             messageBox.textContent = 'Test command executed';
             infoBox.textContent = 'Drawing red diagonal line';
@@ -31,10 +30,10 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
             ctx.strokeStyle = 'blue';
             ctx.lineWidth = 2;
 
-            const Function = x => Math.pow(x, 3);
+            const Function = input => Math.pow(input, 3);
 
             for (let x = -canvas.width / 2; x <= canvas.width / 2; x++) {
-                const y = Function / Math.pow(canvas.width / 2, 2); // Scale the curve to fit the canvas
+                const y = Function(x) / Math.pow(canvas.width / 2, 2); // Scale the curve to fit the canvas
                 if (x === -canvas.width / 2) {
                     ctx.moveTo(canvas.width / 2 + x, canvas.height / 2 - y);
                 } else {
@@ -42,6 +41,10 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
                 }
             }
             ctx.stroke();
+        } else if (input === 'clear') {
+            messageBox.textContent = 'Canvas cleared';
+            infoBox.textContent = 'Nothing is being drawn';
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
         } else {
             messageBox.textContent = 'Unrecognized command. Did you mean "help" or "test"?';
             infoBox.textContent = 'Nothing is being drawn';
