@@ -12,7 +12,7 @@ body {
     align-items: center;
     justify-content: center;
 }
-.info-box {
+.info-box, .definitions-box {
     width: 150px;
     height: 150px;
     border: 2px solid #000;
@@ -21,7 +21,7 @@ body {
     font-family: monospace;
     padding: 10px;
     box-sizing: border-box;
-    margin-right: 20px;
+    margin: 0 20px;
     display: flex;
     align-items: center;
     justify-content: center;
