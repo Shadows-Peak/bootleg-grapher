@@ -88,14 +88,15 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
             // EXAMPLE INPUT => 'define FUNC f(x) := x^2'
             const parameters = input.split(' ');
             parameters.shift(); // Remove 'define' from the array
+            alert(parameters[0]);
             if (parameters[0] === 'FUNC') { // Defining a function
+                alert("HI");
                 const functionName = parameters[1].split('(')[0];
                 const functionVariable = parameters[1].replace(/[()]/g, '').replace(functionName, '');
                 const functionExpression = parameters[3];
                 const newFunction = new FUNCTION(functionName, functionVariable, functionExpression);
                 definedList.push(newFunction);
             }
-            definedList.push(parameters);
             messageBox.textContent = `Define command executed with parameter: ${parameter}`;
             infoBox.textContent = `Defining: ${parameters}`;
             definitionsBox.textContent = `Defined parameters: ${definedList.join(', ')}`;
