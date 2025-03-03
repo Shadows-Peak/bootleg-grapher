@@ -18,12 +18,12 @@ class FUNCTION {
         const variable = this.functionVariable;
         alert(this);
         alert(this.functionDefinition);
-        alert("test 1",this.functionDefinition);
+        alert('test 1'+(this.functionDefinition).toString());
         const expression = this.functionDefinition.replace(variable, value);
         alert("test 2")
         expression = expression.replace('^', '**');
-        alert("test 3",expression);
-        alert("test 4",eval(expression));
+        alert("test 3"+(expression).toString());
+        alert("test 4"+(eval(expression)).toString());
         return eval(expression);
     }
 
