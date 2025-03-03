@@ -1,4 +1,4 @@
-const version = '1.0.4';
+const version = '1.0.4.1';
 const versionTitle = 'Establish Graph Visual Framework'
 
 
@@ -55,6 +55,7 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
         } else if (input.startsWith('graph ')) {
             const FunctionName = input.split(' ')[1];
             const FunctionGrabbed = definedList.find(func => func.functionName === FunctionName);
+            alert("FunctionGrabbed: " + FunctionGrabbed.printOut());
             if (!FunctionGrabbed) {
                 messageBox.textContent = 'Function not defined';
                 infoBox.textContent = 'Nothing is being drawn';
@@ -86,7 +87,7 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
             if (definedList.length === 0) {
                 messageBox.textContent = 'No defined parameters';
             } else {
-                messageBox.textContent = 'Defined parameters: ' + definedList.join(', ');
+                messageBox.textContent = 'Defined parameters: ' + VisualDefinedList.join(', ');
             }
             infoBox.textContent = 'Nothing is being drawn';
         } else if (input.startsWith('define ')) {
@@ -106,7 +107,7 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
             alert("Broken?")
             messageBox.textContent = `Define command executed with parameter: ${parameter}`;
             infoBox.textContent = `Defining: ${parameters}`;
-            definitionsBox.textContent = `Defined parameters: ${definedList.join(', ')}`;
+            definitionsBox.textContent = `Defined parameters: ${VisualDefinedList.join(', ')}`;
         } else {
             messageBox.textContent = 'Unrecognized command. Did you mean "help" or "test"?';
             infoBox.textContent = 'Nothing is being drawn';
