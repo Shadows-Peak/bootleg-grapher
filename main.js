@@ -1,4 +1,4 @@
-const version = '1.0.2';
+const version = '1.0.3';
 const versionTitle = 'Establish Graph Visual Framework'
 
 
@@ -86,7 +86,8 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
             infoBox.textContent = 'Nothing is being drawn';
         } else if (input.startsWith('define ')) {
             // EXAMPLE INPUT => 'define FUNC f(x) := x^2'
-            const parameters = input.split(' ').splice(0,1);
+            const parameters = input.split(' ');
+            parameters.shift(); // Remove 'define' from the array
             if (parameters[0] === 'FUNC') { // Defining a function
                 const functionName = parameters[1].split('(')[0];
                 const functionVariable = parameters[1].replace(/[()]/g, '').replace(functionName, '');
