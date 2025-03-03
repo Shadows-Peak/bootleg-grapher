@@ -106,7 +106,7 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
                 VisualDefinedList.push(newFunction.printOut());
             }
             alert("Broken? pt. 1")
-            messageBox.textContent = `Define command executed with parameter: ${parameter}`;
+            messageBox.textContent = `Define command executed with parameter: ${parameters}`;
             alert("Broken? pt. 2")
             infoBox.textContent = `Defining: ${parameters}`;
             alert("Broken? pt. 3")
