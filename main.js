@@ -39,7 +39,7 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
         const ctx = canvas.getContext('2d');
 
         if (input === 'help') {
-            messageBox.textContent = 'Available commands: help, test';
+            messageBox.textContent = 'Available commands: help, test, clear, check defined, define, graph';
         } else if (input === 'test') {
             messageBox.textContent = 'Test command executed';
             infoBox.textContent = 'Drawing red diagonal line';
@@ -112,8 +112,12 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
             messageBox.textContent = `Define command executed with parameter: ${parameters}`;
             infoBox.textContent = `Defining: ${parameters}`;
             definitionsBox.textContent = `Defined parameters: ${VisualDefinedList.join(', ')}`;
+        } else if (input === 'graph') {
+            messageBox.textContent = 'You must enter parameters. For example: "graph FunctionName"';
+        } else if (input === 'define') {
+            messageBox.textContent = 'You must enter parameters. For example: "define FUNC" to define a function. Then follow that with: "FUNC FunctionName(FunctionVariable) := FunctionDefinition"';
         } else {
-            messageBox.textContent = 'Unrecognized command. Did you mean "help" or "test"?';
+            messageBox.textContent = 'Unrecognized command. Try "help"';
             infoBox.textContent = 'Nothing is being drawn';
         }
         event.target.value = ''; // Clear the input field
