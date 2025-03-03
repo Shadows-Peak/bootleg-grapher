@@ -1,4 +1,4 @@
-const version = '1.0.4.5';
+const version = '1.0.4.6';
 const versionTitle = 'Establish Graph Visual Framework'
 
 
@@ -68,11 +68,12 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
             // Draw y = x^3
             ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear previous drawings
             ctx.beginPath();
-            ctx.strokeStyle = 'blue';
+            ctx.strokeStyle = 'red';
             ctx.lineWidth = 2;;
 
             for (let x = -canvas.width / 2; x <= canvas.width / 2; x++) {
                 const y = FunctionGrabbed.evaluate(x) / Math.pow(canvas.width / 2, 2); // Scale the curve to fit the canvas
+                alert(y);
                 if (x === -canvas.width / 2) {
                     ctx.moveTo(canvas.width / 2 + x, canvas.height / 2 - y);
                 } else {
@@ -95,9 +96,7 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
             // EXAMPLE INPUT => 'define FUNC f(x) := x^2'
             const parameters = input.split(' ');
             parameters.shift(); // Remove 'define' from the array
-            alert(parameters[0]);
             if (parameters[0] === 'FUNC') { // Defining a function
-                alert("HI");
                 const functionName = parameters[1].split('(')[0];
                 const functionVariable = parameters[1].replace(/[()]/g, '').replace(functionName, '');
                 const functionExpression = parameters[3];
@@ -105,13 +104,9 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
                 definedList.push(newFunction);
                 VisualDefinedList.push(newFunction.printOut());
             }
-            alert("Broken? pt. 1")
             messageBox.textContent = `Define command executed with parameter: ${parameters}`;
-            alert("Broken? pt. 2")
             infoBox.textContent = `Defining: ${parameters}`;
-            alert("Broken? pt. 3")
             definitionsBox.textContent = `Defined parameters: ${VisualDefinedList.join(', ')}`;
-            alert("Broken? pt. 4")
         } else {
             messageBox.textContent = 'Unrecognized command. Did you mean "help" or "test"?';
             infoBox.textContent = 'Nothing is being drawn';
