@@ -1,9 +1,10 @@
-const version = '1.0.3.1';
+const version = '1.0.4';
 const versionTitle = 'Establish Graph Visual Framework'
 
 
 
 const definedList = [];
+const VisualDefinedList = [];
 
 class FUNCTION {
     constructor(functionName, functionVariable, functionDefinition) {
@@ -17,6 +18,10 @@ class FUNCTION {
         const expression = this.functionDefinition.replace(variable, value);
         expression = expression.replace('^', '**');
         return eval(expression);
+    }
+
+    printOut() {
+        return `${this.functionName}(${this.functionVariable}) := ${this.functionDefinition}`;
     }
 }
 
@@ -96,7 +101,9 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
                 const functionExpression = parameters[3];
                 const newFunction = new FUNCTION(functionName, functionVariable, functionExpression);
                 definedList.push(newFunction);
+                VisualDefinedList.push(newFunction.printOut());
             }
+            alert("Broken?")
             messageBox.textContent = `Define command executed with parameter: ${parameter}`;
             infoBox.textContent = `Defining: ${parameters}`;
             definitionsBox.textContent = `Defined parameters: ${definedList.join(', ')}`;
