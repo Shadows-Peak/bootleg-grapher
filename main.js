@@ -1,4 +1,4 @@
-const version = '1.0.4.6';
+const version = '1.0.4.7';
 const versionTitle = 'Establish Graph Visual Framework'
 
 
@@ -64,12 +64,17 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
             }
             messageBox.textContent = 'Graphing y = x^3';
             infoBox.textContent = 'Drawing y = x^3';
+            alert("TEST 1");
 
             // Draw y = x^3
             ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear previous drawings
+            alert("TEST 2");
             ctx.beginPath();
+            alert("TEST 3");
             ctx.strokeStyle = 'red';
-            ctx.lineWidth = 2;;
+            alert("TEST 4");
+            ctx.lineWidth = 2;
+            alert("TEST 5");
 
             for (let x = -canvas.width / 2; x <= canvas.width / 2; x++) {
                 const y = FunctionGrabbed.evaluate(x) / Math.pow(canvas.width / 2, 2); // Scale the curve to fit the canvas
