@@ -1,4 +1,4 @@
-const version = '1.0.3';
+const version = '1.0.3.1';
 const versionTitle = 'Establish Graph Visual Framework'
 
 
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 document.querySelector('.command-line').addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
-        const input = event.target.value.trim().toLowerCase();
+        const input = event.target.value.trim();
         const messageBox = document.getElementById('message-box');
         const infoBox = document.getElementById('info-box');
         const definitionsBox = document.getElementById('definitions-box');
