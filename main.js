@@ -1,4 +1,4 @@
-const version = '1.0.6.2';
+const version = '1.0.6.3';
 const iteration = 'DEV';
 const versionTitle = 'Establish Graph Visual Framework'
 
@@ -105,15 +105,17 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
             ctx.strokeStyle = 'red';
             ctx.lineWidth = 2;
 
-            for (let x = -1 * canvas.width / 2; x <= canvas.width / 2; x++) {
-                const y = FunctionGrabbed.evaluate(x) / (canvas.width / 2); // Scale the curve to fit the canvas
-                if (x === -canvas.width / 2) {
-                    ctx.moveTo(canvas.width / 2 + x, canvas.height / 2 - y);
+            const scaleX = canvas.width / 2;
+            const scaleY = canvas.height / 2;
+
+            for (let x = -scaleX; x <= scaleX; x++) {
+                const y = FunctionGrabbed.evaluate(x / scaleX) * scaleY; // Scale the curve to fit the canvas
+                if (x === -scaleX) {
+                    ctx.moveTo(scaleX + x, scaleY - y);
                 } else {
-                    ctx.lineTo(canvas.width / 2 + x, canvas.height / 2 - y);
+                    ctx.lineTo(scaleX + x, scaleY - y);
                 }
-            }
-            ctx.stroke();
+            }e();
         } else if (input === 'clear') {
             messageBox.textContent = 'Canvas cleared';
             infoBox.textContent = 'Nothing is being drawn';
