@@ -1,4 +1,4 @@
-const version = '1.0.5';
+const version = '1.0.5.1';
 const versionTitle = 'Establish Graph Visual Framework'
 
 
@@ -69,12 +69,13 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
             ctx.strokeStyle = 'red';
             ctx.lineWidth = 2;
 
-            for (let x = -1*canvas.width / 2; x <= canvas.width / 2; x++) {
+            for (let x = -1 * canvas.width / 2; x <= canvas.width / 2; x++) {
                 const y = FunctionGrabbed.evaluate(x) / Math.pow(canvas.width / 2, 2); // Scale the curve to fit the canvas
+                const scaledY = y * canvas.height / 2; // Scale y to fit the canvas
                 if (x === -canvas.width / 2) {
-                    ctx.moveTo(canvas.width / 2 + x, canvas.height / 2 - y);
+                    ctx.moveTo(canvas.width / 2 + x, canvas.height / 2 - scaledY);
                 } else {
-                    ctx.lineTo(canvas.width / 2 + x, canvas.height / 2 - y);
+                    ctx.lineTo(canvas.width / 2 + x, canvas.height / 2 - scaledY);
                 }
             }
             ctx.stroke();
@@ -104,6 +105,21 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
             messageBox.textContent = `Define command executed with parameter: ${parameters}`;
             infoBox.textContent = `Defining: ${parameters}`;
             definitionsBox.textContent = `Defined parameters: ${VisualDefinedList.join(', ')}`;
+        } else if (input.startsWith('evaluate ')) {
+            const parameters = input.split(' ');
+            parameters.shift(); // Remove 'evaluate' from the array
+            const FunctionName = parameters[0];
+            const FunctionGrabbed = definedList.find(func => func.functionName === FunctionName);
+            if (!FunctionGrabbed) {
+                messageBox.textContent = 'Function not defined';
+                return;
+            }
+            const value = parameters[1];
+            const result = FunctionGrabbed.evaluate(value);
+            messageBox.textContent = `Evaluated ${FunctionName}(${value}) to be ${result}`;
+            infoBox.textContent = `Evaluating: ${FunctionName}(${value})`;
+        } else if (input === 'evaluate') {
+            messageBox.textContent = 'You must enter parameters. For example: "evaluate FunctionName Value"';
         } else if (input === 'graph') {
             messageBox.textContent = 'You must enter parameters. For example: "graph FunctionName"';
         } else if (input === 'define') {
