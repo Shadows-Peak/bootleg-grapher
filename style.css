@@ -48,7 +48,6 @@ body {
     top: 0;
     left: -30px;
     height: 100%;
-    writing-mode: vertical-rl;
     text-align: center;
 }
 .command-line {
