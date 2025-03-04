@@ -1,4 +1,4 @@
-const version = '1.0.4.14';
+const version = '1.0.5';
 const versionTitle = 'Establish Graph Visual Framework'
 
 
@@ -14,14 +14,9 @@ class FUNCTION {
     }
 
     evaluate(value) {
-        alert("YO WE EVALUATING NOW BABY");
         const variable = (this.functionVariable).toString();
-        alert("TEST 1   "+(variable).toString());
         let expression = ((this.functionDefinition).toString()).replace(variable, "("+value.toString()+")");
-        alert("TEST 2   "+(expression).toString());
         expression = expression.replace('^', '**');
-        alert("TEST 3   "+(expression).toString());
-        alert("TEST 4   "+(eval(expression)).toString())
         return eval(expression);
     }
 
@@ -60,8 +55,6 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
         } else if (input.startsWith('graph ')) {
             const FunctionName = input.split(' ')[1];
             const FunctionGrabbed = definedList.find(func => func.functionName === FunctionName);
-            alert("FunctionGrabbed: " + FunctionGrabbed.printOut());
-            alert(FunctionGrabbed.evaluate(2));
             if (!FunctionGrabbed) {
                 messageBox.textContent = 'Function not defined';
                 infoBox.textContent = 'Nothing is being drawn';
@@ -69,25 +62,15 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
             }
             messageBox.textContent = 'Graphing y = x^3';
             infoBox.textContent = 'Drawing y = x^3';
-            alert("TEST 1");
 
             // Draw y = x^3
             ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear previous drawings
-            alert("TEST 2");
             ctx.beginPath();
-            alert("TEST 3");
             ctx.strokeStyle = 'red';
-            alert("TEST 4");
             ctx.lineWidth = 2;
-            alert("TEST 5");
 
             for (let x = -1*canvas.width / 2; x <= canvas.width / 2; x++) {
-                alert("TEST 6");
-                alert("TEST 7"+(FunctionGrabbed).toString());
-                alert("TEST 8   "+(x).toString());
-                alert("TEST 9   "+(FunctionGrabbed.evaluate(x)).toString());
                 const y = FunctionGrabbed.evaluate(x) / Math.pow(canvas.width / 2, 2); // Scale the curve to fit the canvas
-                alert("TEST 10  " +(y).toString());
                 if (x === -canvas.width / 2) {
                     ctx.moveTo(canvas.width / 2 + x, canvas.height / 2 - y);
                 } else {
