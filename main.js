@@ -1,4 +1,4 @@
-const version = '1.0.5.1';
+const version = 'DEV: 1.0.6';
 const versionTitle = 'Establish Graph Visual Framework'
 
 
@@ -27,7 +27,42 @@ class FUNCTION {
 
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('version-number').textContent = `V${version} - ${new Date().getFullYear()} : ${versionTitle}`;
+    updateTickMarks();
 });
+
+function updateTickMarks() {
+    const canvas = document.getElementById('draw-space');
+    const tickMarksX = document.getElementById('tick-marks-x');
+    const tickMarksY = document.getElementById('tick-marks-y');
+    const tickSpacing = 30;
+    const numTicksX = canvas.width / tickSpacing;
+    const numTicksY = canvas.height / tickSpacing;
+
+    tickMarksX.innerHTML = '';
+    tickMarksY.innerHTML = '';
+
+    // Draw x-axis tick marks
+    for (let i = 0; i <= numTicksX; i++) {
+        const x = i * tickSpacing;
+        const label = document.createElement('div');
+        label.style.position = 'absolute';
+        label.style.left = `${x}px`;
+        label.style.transform = 'translateX(-50%)';
+        label.textContent = (i - numTicksX / 2).toString();
+        tickMarksX.appendChild(label);
+    }
+
+    // Draw y-axis tick marks
+    for (let i = 0; i <= numTicksY; i++) {
+        const y = i * tickSpacing;
+        const label = document.createElement('div');
+        label.style.position = 'absolute';
+        label.style.top = `${y}px`;
+        label.style.transform = 'translateY(-50%)';
+        label.textContent = (numTicksY / 2 - i).toString();
+        tickMarksY.appendChild(label);
+    }
+}
 
 document.querySelector('.command-line').addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {

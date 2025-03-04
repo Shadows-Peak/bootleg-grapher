@@ -33,6 +33,24 @@ body {
     background-color: #8ab08c;
     position: relative;
 }
+.tick-marks {
+    position: absolute;
+    font-family: monospace;
+    color: #000;
+}
+#tick-marks-x {
+    top: 100%;
+    left: 0;
+    width: 100%;
+    text-align: center;
+}
+#tick-marks-y {
+    top: 0;
+    left: -30px;
+    height: 100%;
+    writing-mode: vertical-rl;
+    text-align: center;
+}
 .command-line {
     width: 80%;
     max-width: 600px;
