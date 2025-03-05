@@ -1,4 +1,4 @@
-const version = '1.0.6.4';
+const version = '1.0.6.5';
 const iteration = 'DEV';
 const versionTitle = 'Establish Graph Visual Framework'
 
@@ -18,7 +18,6 @@ class FUNCTION {
         const variable = (this.functionVariable).toString();
         let expression = ((this.functionDefinition).toString()).replace(variable, "("+value.toString()+")");
         expression = expression.replace('^', '**');
-        alert(expression);
         return eval(expression);
     }
 
@@ -116,7 +115,7 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
                 } else {
                     ctx.lineTo(scaleX + x, scaleY - y);
                 }
-            }e();
+            }
         } else if (input === 'clear') {
             messageBox.textContent = 'Canvas cleared';
             infoBox.textContent = 'Nothing is being drawn';
