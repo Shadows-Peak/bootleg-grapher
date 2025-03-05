@@ -1,4 +1,4 @@
-const version = '1.0.6.3';
+const version = '1.0.6.4';
 const iteration = 'DEV';
 const versionTitle = 'Establish Graph Visual Framework'
 
@@ -18,6 +18,7 @@ class FUNCTION {
         const variable = (this.functionVariable).toString();
         let expression = ((this.functionDefinition).toString()).replace(variable, "("+value.toString()+")");
         expression = expression.replace('^', '**');
+        alert(expression);
         return eval(expression);
     }
 
@@ -96,7 +97,7 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
                 infoBox.textContent = 'Nothing is being drawn';
                 return;
             }
-            messageBox.textContent = 'Graphing y = x^3';
+            messageBox.textContent = 'Graphing y = '+(FunctionGrabbed.functionDefinition).toString();
             infoBox.textContent = 'Drawing y = x^3';
 
             // Draw y = x^3
