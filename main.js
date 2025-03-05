@@ -1,4 +1,4 @@
-const version = '1.0.6.5';
+const version = '1.0.6.5.1';
 const iteration = 'DEV';
 const versionTitle = 'Establish Graph Visual Framework'
 
@@ -18,6 +18,7 @@ class FUNCTION {
         const variable = (this.functionVariable).toString();
         let expression = ((this.functionDefinition).toString()).replace(variable, "("+value.toString()+")");
         expression = expression.replace('^', '**');
+        alert(expression);
         return eval(expression);
     }
 
