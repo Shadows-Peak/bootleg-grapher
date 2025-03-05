@@ -1,4 +1,4 @@
-const version = '1.0.6.5.2';
+const version = '1.0.6.5.3';
 const iteration = 'DEV';
 const versionTitle = 'Establish Graph Visual Framework'
 
@@ -18,7 +18,6 @@ class FUNCTION {
         const variable = (this.functionVariable).toString();
         let expression = ((this.functionDefinition).toString()).replace(variable, "("+value.toString()+")");
         expression = expression.replace('^', '**');
-        alert(expression);
         return eval(expression);
     }
 
@@ -111,6 +110,7 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
 
             for (let x = -scaleX; x <= scaleX; x+=scaleX/10) {
                 const y = 5*(FunctionGrabbed.evaluate(5*(x / scaleX)) / scaleY); // Scale the curve to fit the canvas
+                alert('('+(x).toString()+','+(y).toString()+')');
                 if (x === -scaleX) {
                     ctx.moveTo(scaleX + x, scaleY - y);
                 } else {
