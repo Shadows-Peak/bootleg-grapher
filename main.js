@@ -1,4 +1,4 @@
-const version = '1.0.6.5.8';
+const version = '1.0.6.5.9';
 const iteration = 'DEV';
 const versionTitle = 'Establish Graph Visual Framework'
 
@@ -121,6 +121,7 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
                     ctx.lineTo(scaleX + x, scaleY + y);
                 }
             }
+            ctx.stroke();
         } else if (input === 'clear') {
             messageBox.textContent = 'Canvas cleared';
             infoBox.textContent = 'Nothing is being drawn';
