@@ -1,4 +1,4 @@
-const version = '1.1.0.3';
+const version = '1.2.0';
 const iteration = 'DEV';
 const versionTitle = 'Establish Graph Visual Framework'
 
@@ -6,6 +6,10 @@ const versionTitle = 'Establish Graph Visual Framework'
 
 const definedList = [];
 const VisualDefinedList = [];
+
+sampleAmount = 100;
+boundingX = 5;
+boundingY = 5;
 
 class FUNCTION {
     constructor(functionName, functionVariable, functionDefinition) {
@@ -108,17 +112,14 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
             const scaleX = canvas.width / 2;
             const scaleY = canvas.height / 2;
 
-            for (let x = -scaleX; x <= scaleX; x+=scaleX/10) {
-                const adjustedX = 5*(x / scaleX);
+            for (let x = -scaleX; x <= scaleX; x+=scaleX/sampleAmount) {
+                const adjustedX = boundingX*(x / scaleX);
                 const y = FunctionGrabbed.evaluate(adjustedX);
-                const adjustedY = scaleY*(y / 5); // Scale the curve to fit the canvas
-                alert(adjustedX + ' ' + adjustedY);
-                alert(scaleX + ' ' + scaleY);
-                alert(x + ' ' + y);
+                const adjustedY = scaleY*(y / boundingY); // Scale the curve to fit the canvas
                 if (x === -scaleX) {
-                    ctx.moveTo(scaleX + x, scaleY + adjustedY);
+                    ctx.moveTo(scaleX - x, scaleY - adjustedY);
                 } else {
-                    ctx.lineTo(scaleX + x, scaleY + adjustedY);
+                    ctx.lineTo(scaleX - x, scaleY - adjustedY);
                 }
             }
             ctx.stroke();
@@ -144,6 +145,14 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
                 const newFunction = new FUNCTION(functionName, functionVariable, functionExpression);
                 definedList.push(newFunction);
                 VisualDefinedList.push(newFunction.printOut());
+            } else if (parameters[0] === 'SETTING') {
+                if (parameters[1] === 'sampleAmount') {
+                    sampleAmount = parseInt(parameters[2]);
+                } else if (parameters[1] === 'boundingX') {
+                    boundingX = parseInt(parameters[2]);
+                } else if (parameters[1] === 'boundingY') {
+                    boundingY = parseInt(parameters[2]);
+                }
             }
             messageBox.textContent = `Define command executed with parameter: ${parameters}`;
             infoBox.textContent = `Defining: ${parameters}`;
