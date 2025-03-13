@@ -1,4 +1,4 @@
-const version = '1.0.6.5.7';
+const version = '1.0.6.5.8';
 const iteration = 'DEV';
 const versionTitle = 'Establish Graph Visual Framework'
 
@@ -117,6 +117,7 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
                 if (x === -scaleX) {
                     ctx.moveTo(scaleX + x, scaleY + y);
                 } else {
+                    alert('DRAWING LINE' + (scaleX + x).toString() + ',' + (scaleY + y).toString());
                     ctx.lineTo(scaleX + x, scaleY + y);
                 }
             }
