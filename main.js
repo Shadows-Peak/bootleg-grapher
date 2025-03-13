@@ -1,4 +1,4 @@
-const version = '1.1.0';
+const version = '1.1.0.1';
 const iteration = 'DEV';
 const versionTitle = 'Establish Graph Visual Framework'
 
@@ -113,9 +113,9 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
                 const y = FunctionGrabbed.evaluate(adjustedX);
                 const adjustedY = 5*(FunctionGrabbed.evaluate(adjustedX) / scaleY); // Scale the curve to fit the canvas
                 if (x === -scaleX) {
-                    ctx.moveTo(scaleX + x, scaleY + y);
+                    ctx.moveTo(scaleX + adjustedX, scaleY + adjustedY);
                 } else {
-                    ctx.lineTo(scaleX + x, scaleY + y);
+                    ctx.lineTo(scaleX + adjustedX, scaleY + adjustedY);
                 }
             }
             ctx.stroke();
