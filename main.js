@@ -1,4 +1,4 @@
-const version = '1.2.1';
+const version = '1.2.2';
 const iteration = 'DEV';
 const versionTitle = 'Establish Graph Visual Framework'
 
@@ -10,6 +10,22 @@ const VisualDefinedList = [];
 sampleAmount = 100;
 boundingX = 5;
 boundingY = 5;
+
+let savedCanvas;
+currentlyGraphing = false;
+
+function saveCanvas(GivenCanvas) {
+    savedCanvas = GivenCanvas.toDataURL();
+}
+
+function revertCanvas(GivenCanvas) {
+  const img = new Image();
+  img.onload = function() {
+    GivenCanvas.getContext('2d').clearRect(0, 0, GivenCanvas.width, GivenCanvas.height);
+    GivenCanvas.getContext('2d').drawImage(img, 0, 0);
+  };
+  img.src = savedCanvas;
+}
 
 class FUNCTION {
     constructor(functionName, functionVariable, functionDefinition) {
@@ -123,7 +139,10 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
                 }
             }
             ctx.stroke();
+            currentlyGraphing = FunctionGrabbed.functionName;
+            saveCanvas(canvas);
         } else if (input === 'clear') {
+            currentlyGraphing = false;
             messageBox.textContent = 'Canvas cleared';
             infoBox.textContent = 'Nothing is being drawn';
             ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
@@ -168,6 +187,33 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
             }
             const value = parameters[1];
             const result = FunctionGrabbed.evaluate(value);
+            if (currentlyGraphing === FunctionName) {
+                revertCanvas(canvas);
+            }
+
+            // Draw circles at specific points on the edge of the canvas using div elements
+            const circleContainer = document.getElementById('circle-container');
+            circleContainer.innerHTML = ''; // Clear previous circles
+
+            const points = [
+                { x: 0, y: 0 },
+                { x: canvas.width, y: 0 },
+                { x: 0, y: canvas.height },
+                { x: canvas.width, y: canvas.height }
+            ];
+
+            points.forEach(point => {
+                const circle = document.createElement('div');
+                circle.style.position = 'absolute';
+                circle.style.width = '10px';
+                circle.style.height = '10px';
+                circle.style.borderRadius = '50%';
+                circle.style.backgroundColor = 'blue';
+                circle.style.left = `${point.x}px`;
+                circle.style.top = `${point.y}px`;
+                circle.style.transform = 'translate(-50%, -50%)';
+                circleContainer.appendChild(circle);
+            });
             messageBox.textContent = `Evaluated ${FunctionName}(${value}) to be ${result}`;
             infoBox.textContent = `Evaluating: ${FunctionName}(${value})`;
         } else if (input === 'evaluate') {
