@@ -1,4 +1,4 @@
-const version = '1.2.3';
+const version = '1.2.4';
 const iteration = 'DEV';
 const versionTitle = 'Establish Graph Visual Framework'
 
@@ -196,9 +196,9 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
             circleContainer.innerHTML = ''; // Clear previous circles
 
             const points = [
-                { x: (canvas.width/2)*(1+value/boundingX), y: 0 },
-                { x: 0, y: (canvas.height/2)*(1+result/boundingY) },
-                { x: (canvas.width/2)*(1+value/boundingX), y: (canvas.height/2)*(1+result/boundingY) }
+                { x: (canvas.width/2)*(1+value/boundingX), y: canvas.height },
+                { x: 0, y: (canvas.height/2)*(1-result/boundingY) },
+                { x: (canvas.width/2)*(1+value/boundingX), y: (canvas.height/2)*(1-result/boundingY) }
             ];
 
             points.forEach(point => {
