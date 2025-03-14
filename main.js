@@ -1,4 +1,4 @@
-const version = '1.2.4';
+const version = '1.2.5';
 const iteration = 'DEV';
 const versionTitle = 'Establish Graph Visual Framework'
 
@@ -55,7 +55,8 @@ function updateTickMarks() {
     const canvas = document.getElementById('draw-space');
     const tickMarksX = document.getElementById('tick-marks-x');
     const tickMarksY = document.getElementById('tick-marks-y');
-    const tickSpacing = 30;
+    const tickSpacingX = canvas.width/(boundingX*2);
+    const tickSpacingY = canvas.height/(boundingY*2);
     const numTicksX = canvas.width / tickSpacing;
     const numTicksY = canvas.height / tickSpacing;
 
@@ -64,7 +65,7 @@ function updateTickMarks() {
 
     // Draw x-axis tick marks
     for (let i = 0; i <= numTicksX; i++) {
-        const x = i * tickSpacing;
+        const x = i * tickSpacingX;
         const label = document.createElement('div');
         label.style.position = 'absolute';
         label.style.left = `${x}px`;
@@ -75,7 +76,7 @@ function updateTickMarks() {
 
     // Draw y-axis tick marks
     for (let i = 0; i <= numTicksY; i++) {
-        const y = i * tickSpacing;
+        const y = i * tickSpacingY;
         const label = document.createElement('div');
         label.style.position = 'absolute';
         label.style.top = `${y}px`;
