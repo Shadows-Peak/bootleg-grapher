@@ -1,4 +1,4 @@
-const version = '1.2.5';
+const version = '1.2.6';
 const iteration = 'DEV';
 const versionTitle = 'Establish Graph Visual Framework'
 
@@ -57,8 +57,8 @@ function updateTickMarks() {
     const tickMarksY = document.getElementById('tick-marks-y');
     const tickSpacingX = canvas.width/(boundingX*2);
     const tickSpacingY = canvas.height/(boundingY*2);
-    const numTicksX = canvas.width / tickSpacing;
-    const numTicksY = canvas.height / tickSpacing;
+    const numTicksX = canvas.width / tickSpacingX;
+    const numTicksY = canvas.height / tickSpacingY;
 
     tickMarksX.innerHTML = '';
     tickMarksY.innerHTML = '';
@@ -189,6 +189,8 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
             const value = parameters[1];
             const result = FunctionGrabbed.evaluate(value);
             if (currentlyGraphing === FunctionName) {
+                const oldCircles = circleContainer.querySelectorAll('div');
+                oldCircles.forEach(circle => circle.remove());
                 revertCanvas(canvas);
             }
 
