@@ -1,4 +1,4 @@
-const version = '1.2.6';
+const version = '1.2.7';
 const iteration = 'DEV';
 const versionTitle = 'Establish Graph Visual Framework'
 
@@ -7,12 +7,12 @@ const versionTitle = 'Establish Graph Visual Framework'
 const definedList = [];
 const VisualDefinedList = [];
 
-sampleAmount = 100;
-boundingX = 5;
-boundingY = 5;
+let sampleAmount = 100;
+let boundingX = 5;
+let boundingY = 5;
 
 let savedCanvas;
-currentlyGraphing = false;
+let currentlyGraphing = false;
 
 function saveCanvas(GivenCanvas) {
     savedCanvas = GivenCanvas.toDataURL();
@@ -55,8 +55,8 @@ function updateTickMarks() {
     const canvas = document.getElementById('draw-space');
     const tickMarksX = document.getElementById('tick-marks-x');
     const tickMarksY = document.getElementById('tick-marks-y');
-    const tickSpacingX = canvas.width/(boundingX*2);
-    const tickSpacingY = canvas.height/(boundingY*2);
+    let tickSpacingX = canvas.width/(boundingX*2);
+    let tickSpacingY = canvas.height/(boundingY*2);
     const numTicksX = canvas.width / tickSpacingX;
     const numTicksY = canvas.height / tickSpacingY;
 
@@ -120,6 +120,8 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
             messageBox.textContent = 'Graphing y = '+(FunctionGrabbed.functionDefinition).toString();
             infoBox.textContent = 'Drawing y = x^3';
 
+            updateTickMarks();
+
             // Draw y = x^3
             ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear previous drawings
             ctx.beginPath();
@@ -170,14 +172,17 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
                     sampleAmount = parseInt(parameters[2]);
                 } else if (parameters[1] === 'boundingX') {
                     boundingX = parseInt(parameters[2]);
+                    updateTickMarks();
                 } else if (parameters[1] === 'boundingY') {
                     boundingY = parseInt(parameters[2]);
+                    updateTickMarks();
                 }
             }
             messageBox.textContent = `Define command executed with parameter: ${parameters}`;
             infoBox.textContent = `Defining: ${parameters}`;
             definitionsBox.textContent = `Defined parameters: ${VisualDefinedList.join(', ')}`;
         } else if (input.startsWith('evaluate ')) {
+            updateTickMarks();
             const parameters = input.split(' ');
             parameters.shift(); // Remove 'evaluate' from the array
             const FunctionName = parameters[0];
@@ -188,34 +193,36 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
             }
             const value = parameters[1];
             const result = FunctionGrabbed.evaluate(value);
-            if (currentlyGraphing === FunctionName) {
-                const oldCircles = circleContainer.querySelectorAll('div');
-                oldCircles.forEach(circle => circle.remove());
-                revertCanvas(canvas);
-            }
 
             // Draw circles at specific points on the edge of the canvas using div elements
             const circleContainer = document.getElementById('circle-container');
             circleContainer.innerHTML = ''; // Clear previous circles
 
-            const points = [
-                { x: (canvas.width/2)*(1+value/boundingX), y: canvas.height },
-                { x: 0, y: (canvas.height/2)*(1-result/boundingY) },
-                { x: (canvas.width/2)*(1+value/boundingX), y: (canvas.height/2)*(1-result/boundingY) }
-            ];
+            if (currentlyGraphing == FunctionName) {
+                const oldCircles = circleContainer.querySelectorAll('div');
+                oldCircles.forEach(circle => circle.remove());
+                revertCanvas(canvas);
 
-            points.forEach(point => {
-                const circle = document.createElement('div');
-                circle.style.position = 'absolute';
-                circle.style.width = '10px';
-                circle.style.height = '10px';
-                circle.style.borderRadius = '50%';
-                circle.style.backgroundColor = 'blue';
-                circle.style.left = `${point.x}px`;
-                circle.style.top = `${point.y}px`;
-                circle.style.transform = 'translate(-50%, -50%)';
-                circleContainer.appendChild(circle);
-            });
+                const points = [
+                    { x: (canvas.width/2)*(1+value/boundingX), y: canvas.height },
+                    { x: 0, y: (canvas.height/2)*(1-result/boundingY) },
+                    { x: (canvas.width/2)*(1+value/boundingX), y: (canvas.height/2)*(1-result/boundingY) }
+                ];
+    
+                points.forEach(point => {
+                    const circle = document.createElement('div');
+                    circle.style.position = 'absolute';
+                    circle.style.width = '10px';
+                    circle.style.height = '10px';
+                    circle.style.borderRadius = '50%';
+                    circle.style.backgroundColor = 'blue';
+                    circle.style.left = `${point.x}px`;
+                    circle.style.top = `${point.y}px`;
+                    circle.style.transform = 'translate(-50%, -50%)';
+                    circleContainer.appendChild(circle);
+                });
+            }
+
             messageBox.textContent = `Evaluated ${FunctionName}(${value}) to be ${result}`;
             infoBox.textContent = `Evaluating: ${FunctionName}(${value})`;
         } else if (input === 'evaluate') {
