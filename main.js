@@ -1,4 +1,4 @@
-const version = '1.2.8';
+const version = '1.2.8.1';
 const iteration = 'DEV';
 const versionTitle = 'Establish Graph Visual Framework'
 
@@ -27,31 +27,31 @@ function revertCanvas(GivenCanvas) {
   img.src = savedCanvas;
 }
 
-function graph(FUNCtion) {
+function graph(FUNCtion, CANVas) {
     updateTickMarks();
 
     // Draw y = x^3
-    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear previous drawings
-    ctx.beginPath();
-    ctx.strokeStyle = 'red';
-    ctx.lineWidth = 2;
+    CANVas.getContext('2d').clearRect(0, 0, CANVas.width, CANVas.height); // Clear previous drawings
+    CANVas.getContext('2d').beginPath();
+    CANVas.getContext('2d').strokeStyle = 'red';
+    CANVas.getContext('2d').lineWidth = 2;
 
-    const scaleX = canvas.width / 2;
-    const scaleY = canvas.height / 2;
+    const scaleX = CANVas.width / 2;
+    const scaleY = CANVas.height / 2;
         
     for (let x = -scaleX; x <= scaleX; x+=scaleX/sampleAmount) {
         const adjustedX = boundingX*(x / scaleX);
         const y = FUNCtion.evaluate(adjustedX);
         const adjustedY = scaleY*(y / boundingY); // Scale the curve to fit the canvas
         if (x === -scaleX) {
-            ctx.moveTo(scaleX + x, scaleY - adjustedY);
+            CANVas.getContext('2d').moveTo(scaleX + x, scaleY - adjustedY);
         } else {
-            ctx.lineTo(scaleX + x, scaleY - adjustedY);
+            CANVas.getContext('2d').lineTo(scaleX + x, scaleY - adjustedY);
         }
     }
-    ctx.stroke();
+    CANVas.getContext('2d').stroke();
     currentlyGraphing = FunctionGrabbed.functionName;
-    saveCanvas(canvas);
+    saveCanvas(CANVas);
 }
 
 class FUNCTION {
@@ -147,7 +147,7 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
             messageBox.textContent = 'Graphing y = '+(FunctionGrabbed.functionDefinition).toString();
             infoBox.textContent = 'Drawing y = x^3';
 
-            graph(FunctionGrabbed);
+            graph(FunctionGrabbed,canvas);
         } else if (input === 'clear') {
             currentlyGraphing = false;
             messageBox.textContent = 'Canvas cleared';
@@ -176,10 +176,10 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
                     sampleAmount = parseInt(parameters[2]);
                 } else if (parameters[1] === 'boundingX') {
                     boundingX = parseInt(parameters[2]);
-                    graph(FunctionGrabbed);
+                    graph(FunctionGrabbed,canvas);
                 } else if (parameters[1] === 'boundingY') {
                     boundingY = parseInt(parameters[2]);
-                    graph(FunctionGrabbed);
+                    graph(FunctionGrabbed,canvas);
                 }
             }
             messageBox.textContent = `Define command executed with parameter: ${parameters}`;
