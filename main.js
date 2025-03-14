@@ -1,4 +1,4 @@
-const version = '1.2.7';
+const version = '1.2.8';
 const iteration = 'DEV';
 const versionTitle = 'Establish Graph Visual Framework'
 
@@ -25,6 +25,33 @@ function revertCanvas(GivenCanvas) {
     GivenCanvas.getContext('2d').drawImage(img, 0, 0);
   };
   img.src = savedCanvas;
+}
+
+function graph(FUNCtion) {
+    updateTickMarks();
+
+    // Draw y = x^3
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear previous drawings
+    ctx.beginPath();
+    ctx.strokeStyle = 'red';
+    ctx.lineWidth = 2;
+
+    const scaleX = canvas.width / 2;
+    const scaleY = canvas.height / 2;
+        
+    for (let x = -scaleX; x <= scaleX; x+=scaleX/sampleAmount) {
+        const adjustedX = boundingX*(x / scaleX);
+        const y = FUNCtion.evaluate(adjustedX);
+        const adjustedY = scaleY*(y / boundingY); // Scale the curve to fit the canvas
+        if (x === -scaleX) {
+            ctx.moveTo(scaleX + x, scaleY - adjustedY);
+        } else {
+            ctx.lineTo(scaleX + x, scaleY - adjustedY);
+        }
+    }
+    ctx.stroke();
+    currentlyGraphing = FunctionGrabbed.functionName;
+    saveCanvas(canvas);
 }
 
 class FUNCTION {
@@ -120,30 +147,7 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
             messageBox.textContent = 'Graphing y = '+(FunctionGrabbed.functionDefinition).toString();
             infoBox.textContent = 'Drawing y = x^3';
 
-            updateTickMarks();
-
-            // Draw y = x^3
-            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear previous drawings
-            ctx.beginPath();
-            ctx.strokeStyle = 'red';
-            ctx.lineWidth = 2;
-
-            const scaleX = canvas.width / 2;
-            const scaleY = canvas.height / 2;
-
-            for (let x = -scaleX; x <= scaleX; x+=scaleX/sampleAmount) {
-                const adjustedX = boundingX*(x / scaleX);
-                const y = FunctionGrabbed.evaluate(adjustedX);
-                const adjustedY = scaleY*(y / boundingY); // Scale the curve to fit the canvas
-                if (x === -scaleX) {
-                    ctx.moveTo(scaleX + x, scaleY - adjustedY);
-                } else {
-                    ctx.lineTo(scaleX + x, scaleY - adjustedY);
-                }
-            }
-            ctx.stroke();
-            currentlyGraphing = FunctionGrabbed.functionName;
-            saveCanvas(canvas);
+            graph(FunctionGrabbed);
         } else if (input === 'clear') {
             currentlyGraphing = false;
             messageBox.textContent = 'Canvas cleared';
@@ -172,10 +176,10 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
                     sampleAmount = parseInt(parameters[2]);
                 } else if (parameters[1] === 'boundingX') {
                     boundingX = parseInt(parameters[2]);
-                    updateTickMarks();
+                    graph(FunctionGrabbed);
                 } else if (parameters[1] === 'boundingY') {
                     boundingY = parseInt(parameters[2]);
-                    updateTickMarks();
+                    graph(FunctionGrabbed);
                 }
             }
             messageBox.textContent = `Define command executed with parameter: ${parameters}`;
