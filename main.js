@@ -1,4 +1,4 @@
-const version = '1.3.0.1';
+const version = '1.3.0.2';
 const iteration = 'DEV';
 const versionTitle = 'Complex Function Support';
 
@@ -6,6 +6,16 @@ const versionTitle = 'Complex Function Support';
 
 const definedList = [];
 const VisualDefinedList = [];
+
+// Define a complex square root function: f(z) := z^(1/2)
+const sqrtCFunc = new CFUNCTION('f', 'z', 'z^(1/2)');
+definedList.push(sqrtCFunc);
+VisualDefinedList.push(sqrtCFunc.printOut());
+
+// Test evaluate at z = -1
+const testValue = new Complex(-1, 0);
+const result = sqrtCFunc.evaluate(testValue);
+console.log(`f(-1) = ${result.re} + ${result.im}i`);
 
 let sampleAmount = 100;
 let boundingX = 5;
@@ -218,9 +228,11 @@ class CFUNCTION {
     // Evaluate for a complex z
     evaluate(z) {
         // Replace variable with z, and i with new Complex(0,1)
+        console.log(`[CFUNCTION] Evaluating with z =`, z);
         let expr = this.functionDefinition
             .replace(/\bi\b/g, 'I') // temp replace i with I
-            .replace(new RegExp(this.functionVariable + '(?![\w])', 'g'), 'Z');
+            .replace(new RegExp(this.functionVariable + '(?![\\w])', 'g'), 'Z');
+        console.log(`[CFUNCTION] After variable/i replacement: ${expr}`);
         // Replace ^ with Complex.pow, * with Complex.mul, / with Complex.div, + with Complex.add, - with Complex.sub
         expr = expr.replace(/([\w.()]+)\s*\^\s*([\w.()]+)/g, 'Complex.pow($1,$2)');
         expr = expr.replace(/([\w.()]+)\s*\*\s*([\w.()]+)/g, 'Complex.mul($1,$2)');
@@ -228,10 +240,19 @@ class CFUNCTION {
         expr = expr.replace(/([\w.()]+)\s*\+\s*([\w.()]+)/g, 'Complex.add($1,$2)');
         // For minus, avoid unary minus confusion:
         expr = expr.replace(/([\w.()]+)\s*-\s*([\w.()]+)/g, 'Complex.sub($1,$2)');
+        console.log(`[CFUNCTION] After operator replacement: ${expr}`);
         // eslint-disable-next-line no-new-func
         const fn = new Function('Z', 'I', 'Complex', `return ${expr};`);
         // Z is Complex, I is Complex(0,1)
-        return fn(z, new Complex(0,1), Complex);
+        let result;
+        try {
+            result = fn(z, new Complex(0,1), Complex);
+            console.log(`[CFUNCTION] Evaluation result:`, result);
+        } catch (e) {
+            console.error(`[CFUNCTION] Error evaluating expression: ${expr}`, e);
+            throw e;
+        }
+        return result;
     }
 
     printOut() {
