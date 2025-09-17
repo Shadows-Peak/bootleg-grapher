@@ -1,6 +1,6 @@
-const version = '1.2.8.1';
+const version = '1.3.0.0';
 const iteration = 'DEV';
-const versionTitle = 'Establish Graph Visual Framework'
+const versionTitle = 'Complex Function Support';
 
 
 
