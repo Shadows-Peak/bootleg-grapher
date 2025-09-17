@@ -1,4 +1,4 @@
-const version = '1.3.0.5';
+const version = '1.3.0.6';
 const iteration = 'DEV';
 const versionTitle = 'Complex Function Support';
 
@@ -237,9 +237,10 @@ class CFUNCTION {
 
         // Only allow Z and I as variables, and Complex as class
         // Replace Z and I with actual values in the string
-        let safeExpr = expr
-            .replace(/\bZ\b/g, z.toString())
-            .replace(/\bI\b/g, Complex(0, 1).toString());
+        // Provide Z and I as variables in the eval scope
+        const Z = z;
+        const I = new Complex(0, 1);
+        let safeExpr = expr;
 
         // Only allow certain characters for safety
         if (!/^[\w\s().,+\-*/^ComplexzI]+$/.test(safeExpr)) {
