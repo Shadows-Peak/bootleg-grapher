@@ -1,4 +1,4 @@
-const version = '1.3.0.7';
+const version = '1.3.0.8';
 const iteration = 'DEV';
 const versionTitle = 'Complex Function Support';
 
@@ -228,6 +228,10 @@ class CFUNCTION {
         let expr = this.functionDefinition
             .replace(/\bi\b/g, 'I') // temp replace i with I
             .replace(new RegExp(this.functionVariable + '(?![\\w])', 'g'), 'Z');
+        const messageBox = document.getElementById('message-box');
+        const infoBox = document.getElementById('info-box');
+        infoBox.textContent = `Evaluating expression: ${expr}`;
+        messageBox.textContent = `Evaluating expression: ${expr}`;
         // Replace ^ with Complex.pow, * with Complex.mul, / with Complex.div, + with Complex.add, - with Complex.sub
         expr = expr.replace(/([\w.()]+)\s*\^\s*([\w.()]+)/g, 'Complex.pow($1,$2)');
         expr = expr.replace(/([\w.()]+)\s*\*\s*([\w.()]+)/g, 'Complex.mul($1,$2)');
