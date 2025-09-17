@@ -1,4 +1,4 @@
-const version = '1.3.0.0';
+const version = '1.3.0.1';
 const iteration = 'DEV';
 const versionTitle = 'Complex Function Support';
 
@@ -44,7 +44,13 @@ function graph(FUNCtion, CANVas, mode = null) {
             for (let x = -scaleX; x <= scaleX; x += scaleX / sampleAmount) {
                 const adjustedX = boundingX * (x / scaleX);
                 const z = new Complex(adjustedX, 0);
-                const val = FUNCtion.evaluate(z);
+                let val;
+                try {
+                    val = FUNCtion.evaluate(z);
+                } catch (e) {
+                    console.error(`Error evaluating at x=${adjustedX}:`, e);
+                    continue;
+                }
                 const y = val.re;
                 const adjustedY = scaleY * (y / boundingY);
                 if (x === -scaleX) {
@@ -153,16 +159,50 @@ class Complex {
         this.im = im;
     }
     add(other) {
-        return new Complex(this.re + other.re, this.im + other.im);
+        return Complex.add(this, other);
     }
     mul(other) {
-        return new Complex(
-            this.re * other.re - this.im * other.im,
-            this.re * other.im + this.im * other.re
-        );
+        return Complex.mul(this, other);
     }
     abs() {
         return Math.sqrt(this.re * this.re + this.im * this.im);
+    }
+    static add(a, b) {
+        if (!(a instanceof Complex)) a = new Complex(a, 0);
+        if (!(b instanceof Complex)) b = new Complex(b, 0);
+        return new Complex(a.re + b.re, a.im + b.im);
+    }
+    static sub(a, b) {
+        if (!(a instanceof Complex)) a = new Complex(a, 0);
+        if (!(b instanceof Complex)) b = new Complex(b, 0);
+        return new Complex(a.re - b.re, a.im - b.im);
+    }
+    static mul(a, b) {
+        if (!(a instanceof Complex)) a = new Complex(a, 0);
+        if (!(b instanceof Complex)) b = new Complex(b, 0);
+        return new Complex(
+            a.re * b.re - a.im * b.im,
+            a.re * b.im + a.im * b.re
+        );
+    }
+    static div(a, b) {
+        if (!(a instanceof Complex)) a = new Complex(a, 0);
+        if (!(b instanceof Complex)) b = new Complex(b, 0);
+        const denom = b.re * b.re + b.im * b.im;
+        return new Complex(
+            (a.re * b.re + a.im * b.im) / denom,
+            (a.im * b.re - a.re * b.im) / denom
+        );
+    }
+    static pow(a, n) {
+        if (!(a instanceof Complex)) a = new Complex(a, 0);
+        if (typeof n === 'number') {
+            let r = Math.pow(a.abs(), n);
+            let theta = Math.atan2(a.im, a.re) * n;
+            return new Complex(r * Math.cos(theta), r * Math.sin(theta));
+        } else {
+            throw new Error('Complex powers with non-real exponents not supported');
+        }
     }
 }
 
@@ -180,11 +220,18 @@ class CFUNCTION {
         // Replace variable with z, and i with new Complex(0,1)
         let expr = this.functionDefinition
             .replace(/\bi\b/g, 'I') // temp replace i with I
-            .replace(this.functionVariable, 'Z');
+            .replace(new RegExp(this.functionVariable + '(?![\w])', 'g'), 'Z');
+        // Replace ^ with Complex.pow, * with Complex.mul, / with Complex.div, + with Complex.add, - with Complex.sub
+        expr = expr.replace(/([\w.()]+)\s*\^\s*([\w.()]+)/g, 'Complex.pow($1,$2)');
+        expr = expr.replace(/([\w.()]+)\s*\*\s*([\w.()]+)/g, 'Complex.mul($1,$2)');
+        expr = expr.replace(/([\w.()]+)\s*\/\s*([\w.()]+)/g, 'Complex.div($1,$2)');
+        expr = expr.replace(/([\w.()]+)\s*\+\s*([\w.()]+)/g, 'Complex.add($1,$2)');
+        // For minus, avoid unary minus confusion:
+        expr = expr.replace(/([\w.()]+)\s*-\s*([\w.()]+)/g, 'Complex.sub($1,$2)');
         // eslint-disable-next-line no-new-func
-        const fn = new Function('Z', 'I', `return ${expr.replace(/\^/g, '**')};`);
+        const fn = new Function('Z', 'I', 'Complex', `return ${expr};`);
         // Z is Complex, I is Complex(0,1)
-        return fn(z, new Complex(0,1));
+        return fn(z, new Complex(0,1), Complex);
     }
 
     printOut() {
