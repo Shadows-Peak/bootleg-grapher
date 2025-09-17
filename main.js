@@ -1,4 +1,4 @@
-const version = '1.3.0.3';
+const version = '1.3.0.4';
 const iteration = 'DEV';
 const versionTitle = 'Complex Function Support';
 
@@ -225,28 +225,37 @@ class CFUNCTION {
     // Evaluate for a complex z
     evaluate(z) {
         // Replace variable with z, and i with new Complex(0,1)
-        console.log(`[CFUNCTION] Evaluating with z =`, z);
         let expr = this.functionDefinition
             .replace(/\bi\b/g, 'I') // temp replace i with I
             .replace(new RegExp(this.functionVariable + '(?![\\w])', 'g'), 'Z');
-        console.log(`[CFUNCTION] After variable/i replacement: ${expr}`);
         // Replace ^ with Complex.pow, * with Complex.mul, / with Complex.div, + with Complex.add, - with Complex.sub
         expr = expr.replace(/([\w.()]+)\s*\^\s*([\w.()]+)/g, 'Complex.pow($1,$2)');
         expr = expr.replace(/([\w.()]+)\s*\*\s*([\w.()]+)/g, 'Complex.mul($1,$2)');
         expr = expr.replace(/([\w.()]+)\s*\/\s*([\w.()]+)/g, 'Complex.div($1,$2)');
         expr = expr.replace(/([\w.()]+)\s*\+\s*([\w.()]+)/g, 'Complex.add($1,$2)');
-        // For minus, avoid unary minus confusion:
         expr = expr.replace(/([\w.()]+)\s*-\s*([\w.()]+)/g, 'Complex.sub($1,$2)');
-        console.log(`[CFUNCTION] After operator replacement: ${expr}`);
-        // eslint-disable-next-line no-new-func
-        const fn = new Function('Z', 'I', 'Complex', `return ${expr};`);
-        // Z is Complex, I is Complex(0,1)
+
+        // Only allow Z and I as variables, and Complex as class
+        // Replace Z and I with actual values in the string
+        let safeExpr = expr
+            .replace(/\bZ\b/g, 'z')
+            .replace(/\bI\b/g, 'I');
+
+        // Define I as Complex(0,1)
+        const I = new Complex(0, 1);
+
+        // Only allow certain characters for safety
+        if (!/^[\w\s().,+\-*/^ComplexzI]+$/.test(safeExpr)) {
+            throw new Error('Unsafe characters in expression');
+        }
+
+        // Evaluate using eval in a restricted scope
+        // eslint-disable-next-line no-eval
         let result;
         try {
-            result = fn(z, new Complex(0,1), Complex);
-            console.log(`[CFUNCTION] Evaluation result:`, result);
+            result = eval(safeExpr);
         } catch (e) {
-            console.error(`[CFUNCTION] Error evaluating expression: ${expr}`, e);
+            console.error(`[CFUNCTION] Error evaluating expression: ${safeExpr}`, e);
             throw e;
         }
         return result;
