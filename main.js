@@ -7,15 +7,7 @@ const versionTitle = 'Complex Function Support';
 const definedList = [];
 const VisualDefinedList = [];
 
-// Define a complex square root function: f(z) := z^(1/2)
-const sqrtCFunc = new CFUNCTION('f', 'z', 'z^(1/2)');
-definedList.push(sqrtCFunc);
-VisualDefinedList.push(sqrtCFunc.printOut());
 
-// Test evaluate at z = -1
-const testValue = new Complex(-1, 0);
-const result = sqrtCFunc.evaluate(testValue);
-console.log(`f(-1) = ${result.re} + ${result.im}i`);
 
 let sampleAmount = 100;
 let boundingX = 5;
@@ -268,6 +260,15 @@ class CFUNCTION {
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('version-number').textContent = `${iteration} V${version} - ${new Date().getFullYear()} : ${versionTitle}`;
     updateTickMarks();
+    // Define a complex square root function: f(z) := z^(1/2)
+    const sqrtCFunc = new CFUNCTION('f', 'z', 'z^(1/2)');
+    definedList.push(sqrtCFunc);
+    VisualDefinedList.push(sqrtCFunc.printOut());
+
+    // Test evaluate at z = -1
+    const testValue = new Complex(-1, 0);
+    const result = sqrtCFunc.evaluate(testValue);
+    console.log(`f(-1) = ${result.re} + ${result.im}i`);
 });
 
 function updateTickMarks() {
