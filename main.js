@@ -1,4 +1,4 @@
-const version = '1.3.0.2';
+const version = '1.3.0.3';
 const iteration = 'DEV';
 const versionTitle = 'Complex Function Support';
 
@@ -206,13 +206,18 @@ class Complex {
     }
     static pow(a, n) {
         if (!(a instanceof Complex)) a = new Complex(a, 0);
-        if (typeof n === 'number') {
-            let r = Math.pow(a.abs(), n);
-            let theta = Math.atan2(a.im, a.re) * n;
-            return new Complex(r * Math.cos(theta), r * Math.sin(theta));
-        } else {
-            throw new Error('Complex powers with non-real exponents not supported');
+        // Try to evaluate n as a number if it's not already
+        let numN = n;
+        if (typeof n !== 'number') {
+            try {
+                numN = eval(n);
+            } catch (e) {
+                throw new Error('Complex.pow: exponent could not be evaluated as a number: ' + n);
+            }
         }
+        let r = Math.pow(a.abs(), numN);
+        let theta = Math.atan2(a.im, a.re) * numN;
+        return new Complex(r * Math.cos(theta), r * Math.sin(theta));
     }
 }
 
