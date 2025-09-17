@@ -1,4 +1,4 @@
-const version = '1.3.0.6';
+const version = '1.3.0.7';
 const iteration = 'DEV';
 const versionTitle = 'Complex Function Support';
 
@@ -256,6 +256,8 @@ class CFUNCTION {
             console.error(`[CFUNCTION] Error evaluating expression: ${safeExpr}`, e);
             throw e;
         }
+        infoBox.textContent = `Evaluated expression: ${safeExpr} to ${result.re} + ${result.im}i`;
+        messageBox.textContent = `Evaluated expression: ${safeExpr} to ${result.re} + ${result.im}i`;
         return result;
     }
 
