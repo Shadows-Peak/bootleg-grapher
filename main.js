@@ -27,30 +27,101 @@ function revertCanvas(GivenCanvas) {
   img.src = savedCanvas;
 }
 
-function graph(FUNCtion, CANVas) {
+function graph(FUNCtion, CANVas, mode = null) {
     updateTickMarks();
-
-    // Draw y = x^3
-    CANVas.getContext('2d').clearRect(0, 0, CANVas.width, CANVas.height); // Clear previous drawings
-    CANVas.getContext('2d').beginPath();
-    CANVas.getContext('2d').strokeStyle = 'red';
-    CANVas.getContext('2d').lineWidth = 2;
-
+    const ctx = CANVas.getContext('2d');
+    ctx.clearRect(0, 0, CANVas.width, CANVas.height); // Clear previous drawings
+    ctx.lineWidth = 2;
     const scaleX = CANVas.width / 2;
     const scaleY = CANVas.height / 2;
-        
-    for (let x = -scaleX; x <= scaleX; x+=scaleX/sampleAmount) {
-        const adjustedX = boundingX*(x / scaleX);
-        const y = FUNCtion.evaluate(adjustedX);
-        const adjustedY = scaleY*(y / boundingY); // Scale the curve to fit the canvas
-        if (x === -scaleX) {
-            CANVas.getContext('2d').moveTo(scaleX + x, scaleY - adjustedY);
+
+    if (FUNCtion.type === 'CFUNC') {
+        // Complex function: mode is DUAL or ABS
+        if (mode === 'DUAL') {
+            // Real part (blue)
+            ctx.beginPath();
+            ctx.strokeStyle = 'blue';
+            for (let x = -scaleX; x <= scaleX; x += scaleX / sampleAmount) {
+                const adjustedX = boundingX * (x / scaleX);
+                const z = new Complex(adjustedX, 0);
+                const val = FUNCtion.evaluate(z);
+                const y = val.re;
+                const adjustedY = scaleY * (y / boundingY);
+                if (x === -scaleX) {
+                    ctx.moveTo(scaleX + x, scaleY - adjustedY);
+                } else {
+                    ctx.lineTo(scaleX + x, scaleY - adjustedY);
+                }
+            }
+            ctx.stroke();
+            // Imaginary part (red)
+            ctx.beginPath();
+            ctx.strokeStyle = 'red';
+            for (let x = -scaleX; x <= scaleX; x += scaleX / sampleAmount) {
+                const adjustedX = boundingX * (x / scaleX);
+                const z = new Complex(adjustedX, 0);
+                const val = FUNCtion.evaluate(z);
+                const y = val.im;
+                const adjustedY = scaleY * (y / boundingY);
+                if (x === -scaleX) {
+                    ctx.moveTo(scaleX + x, scaleY - adjustedY);
+                } else {
+                    ctx.lineTo(scaleX + x, scaleY - adjustedY);
+                }
+            }
+            ctx.stroke();
+        } else if (mode === 'ABS') {
+            // Magnitude (red)
+            ctx.beginPath();
+            ctx.strokeStyle = 'red';
+            for (let x = -scaleX; x <= scaleX; x += scaleX / sampleAmount) {
+                const adjustedX = boundingX * (x / scaleX);
+                const z = new Complex(adjustedX, 0);
+                const val = FUNCtion.evaluate(z);
+                const y = val.abs();
+                const adjustedY = scaleY * (y / boundingY);
+                if (x === -scaleX) {
+                    ctx.moveTo(scaleX + x, scaleY - adjustedY);
+                } else {
+                    ctx.lineTo(scaleX + x, scaleY - adjustedY);
+                }
+            }
+            ctx.stroke();
         } else {
-            CANVas.getContext('2d').lineTo(scaleX + x, scaleY - adjustedY);
+            // Default: plot real part (blue)
+            ctx.beginPath();
+            ctx.strokeStyle = 'blue';
+            for (let x = -scaleX; x <= scaleX; x += scaleX / sampleAmount) {
+                const adjustedX = boundingX * (x / scaleX);
+                const z = new Complex(adjustedX, 0);
+                const val = FUNCtion.evaluate(z);
+                const y = val.re;
+                const adjustedY = scaleY * (y / boundingY);
+                if (x === -scaleX) {
+                    ctx.moveTo(scaleX + x, scaleY - adjustedY);
+                } else {
+                    ctx.lineTo(scaleX + x, scaleY - adjustedY);
+                }
+            }
+            ctx.stroke();
         }
+    } else {
+        // Real function
+        ctx.beginPath();
+        ctx.strokeStyle = 'red';
+        for (let x = -scaleX; x <= scaleX; x += scaleX / sampleAmount) {
+            const adjustedX = boundingX * (x / scaleX);
+            const y = FUNCtion.evaluate(adjustedX);
+            const adjustedY = scaleY * (y / boundingY);
+            if (x === -scaleX) {
+                ctx.moveTo(scaleX + x, scaleY - adjustedY);
+            } else {
+                ctx.lineTo(scaleX + x, scaleY - adjustedY);
+            }
+        }
+        ctx.stroke();
     }
-    CANVas.getContext('2d').stroke();
-    currentlyGraphing = FunctionGrabbed.functionName;
+    currentlyGraphing = FUNCtion.functionName;
     saveCanvas(CANVas);
 }
 
@@ -59,13 +130,61 @@ class FUNCTION {
         this.functionName = functionName;
         this.functionVariable = functionVariable;
         this.functionDefinition = functionDefinition;
+        this.type = 'FUNC';
     }
 
     evaluate(value) {
         const variable = (this.functionVariable).toString();
         let expression = ((this.functionDefinition).toString()).replace(variable, "("+value.toString()+")");
         expression = expression.replace('^', '**');
+        console.log(`Evaluating expression: ${expression}`);
         return eval(expression);
+    }
+
+    printOut() {
+        return `${this.functionName}(${this.functionVariable}) := ${this.functionDefinition}`;
+    }
+}
+
+// Complex number class for CFUNC
+class Complex {
+    constructor(re, im) {
+        this.re = re;
+        this.im = im;
+    }
+    add(other) {
+        return new Complex(this.re + other.re, this.im + other.im);
+    }
+    mul(other) {
+        return new Complex(
+            this.re * other.re - this.im * other.im,
+            this.re * other.im + this.im * other.re
+        );
+    }
+    abs() {
+        return Math.sqrt(this.re * this.re + this.im * this.im);
+    }
+}
+
+// CFUNCTION for complex functions
+class CFUNCTION {
+    constructor(functionName, functionVariable, functionDefinition) {
+        this.functionName = functionName;
+        this.functionVariable = functionVariable;
+        this.functionDefinition = functionDefinition;
+        this.type = 'CFUNC';
+    }
+
+    // Evaluate for a complex z
+    evaluate(z) {
+        // Replace variable with z, and i with new Complex(0,1)
+        let expr = this.functionDefinition
+            .replace(/\bi\b/g, 'I') // temp replace i with I
+            .replace(this.functionVariable, 'Z');
+        // eslint-disable-next-line no-new-func
+        const fn = new Function('Z', 'I', `return ${expr.replace(/\^/g, '**')};`);
+        // Z is Complex, I is Complex(0,1)
+        return fn(z, new Complex(0,1));
     }
 
     printOut() {
@@ -123,7 +242,7 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
         const ctx = canvas.getContext('2d');
 
         if (input === 'help') {
-            messageBox.textContent = 'Available commands: help, test, clear, check defined, define, graph';
+            messageBox.textContent = 'Available commands: help, test, clear, check defined, define, graph, evaluate';
         } else if (input === 'test') {
             messageBox.textContent = 'Test command executed';
             infoBox.textContent = 'Drawing red diagonal line';
@@ -137,17 +256,33 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
             ctx.lineWidth = 2;
             ctx.stroke();
         } else if (input.startsWith('graph ')) {
-            const FunctionName = input.split(' ')[1];
+            // Support: graph f DUAL, graph f ABS, or just graph f
+            const parts = input.split(' ');
+            const FunctionName = parts[1];
+            const mode = (parts.length > 2) ? parts[2].toUpperCase() : null;
             const FunctionGrabbed = definedList.find(func => func.functionName === FunctionName);
             if (!FunctionGrabbed) {
                 messageBox.textContent = 'Function not defined';
                 infoBox.textContent = 'Nothing is being drawn';
                 return;
             }
-            messageBox.textContent = 'Graphing y = '+(FunctionGrabbed.functionDefinition).toString();
-            infoBox.textContent = 'Drawing y = x^3';
-
-            graph(FunctionGrabbed,canvas);
+            if (FunctionGrabbed.type === 'CFUNC') {
+                if (mode === 'DUAL') {
+                    messageBox.textContent = `Graphing real (blue) and imaginary (red) parts of ${FunctionName}`;
+                    infoBox.textContent = `Drawing real/imaginary for ${FunctionName}`;
+                } else if (mode === 'ABS') {
+                    messageBox.textContent = `Graphing |${FunctionName}(z)| (red)`;
+                    infoBox.textContent = `Drawing magnitude for ${FunctionName}`;
+                } else {
+                    messageBox.textContent = `Graphing real part of ${FunctionName} (blue)`;
+                    infoBox.textContent = `Drawing real part for ${FunctionName}`;
+                }
+                graph(FunctionGrabbed, canvas, mode);
+            } else {
+                messageBox.textContent = 'Graphing y = ' + (FunctionGrabbed.functionDefinition).toString();
+                infoBox.textContent = 'Drawing y = x^3';
+                graph(FunctionGrabbed, canvas);
+            }
         } else if (input === 'clear') {
             currentlyGraphing = false;
             messageBox.textContent = 'Canvas cleared';
@@ -161,7 +296,7 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
             }
             infoBox.textContent = 'Nothing is being drawn';
         } else if (input.startsWith('define ')) {
-            // EXAMPLE INPUT => 'define FUNC f(x) := x^2'
+            // EXAMPLE INPUT => 'define FUNC f(x) := x^2' or 'define CFUNC f(z) := z^2 + z*i'
             const parameters = input.split(' ');
             parameters.shift(); // Remove 'define' from the array
             if (parameters[0] === 'FUNC') { // Defining a function
@@ -171,6 +306,13 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
                 const newFunction = new FUNCTION(functionName, functionVariable, functionExpression);
                 definedList.push(newFunction);
                 VisualDefinedList.push(newFunction.printOut());
+            } else if (parameters[0] === 'CFUNC') { // Defining a complex function
+                const functionName = parameters[1].split('(')[0];
+                const functionVariable = parameters[1].replace(/[()]/g, '').replace(functionName, '');
+                const functionExpression = parameters.slice(3).join(' '); // allow spaces in complex expr
+                const newCFunction = new CFUNCTION(functionName, functionVariable, functionExpression);
+                definedList.push(newCFunction);
+                VisualDefinedList.push(newCFunction.printOut());
             } else if (parameters[0] === 'SETTING') {
                 if (parameters[1] === 'sampleAmount') {
                     sampleAmount = parseInt(parameters[2]);
@@ -180,6 +322,11 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
                 } else if (parameters[1] === 'boundingY') {
                     boundingY = parseInt(parameters[2]);
                     graph(FunctionGrabbed,canvas);
+                }
+                if (isNaN(sampleAmount) || isNaN(boundingX) || isNaN(boundingY)) {
+                    messageBox.textContent = 'Invalid setting value';
+                    messageBox.textContent += ' Valid settings: sampleAmount, boundingX, boundingY';
+                    return;
                 }
             }
             messageBox.textContent = `Define command executed with parameter: ${parameters}`;
@@ -232,9 +379,11 @@ document.querySelector('.command-line').addEventListener('keydown', function(eve
         } else if (input === 'evaluate') {
             messageBox.textContent = 'You must enter parameters. For example: "evaluate FunctionName Value"';
         } else if (input === 'graph') {
-            messageBox.textContent = 'You must enter parameters. For example: "graph FunctionName"';
+            messageBox.textContent = 'You must enter parameters. For example: "graph FunctionName (For complex: [DUAL|ABS])"';
         } else if (input === 'define') {
             messageBox.textContent = 'You must enter parameters. For example: "define FUNC" to define a function. Then follow that with: "FUNC FunctionName(FunctionVariable) := FunctionDefinition"';
+            messageBox.textContent += ' Or "define CFUNC" to define a complex function. Then follow that with: "CFUNC FunctionName(FunctionVariable) := FunctionDefinition"';
+            messageBox.textContent += ' Or "define SETTING" to change settings. Then follow that with: "SETTING SettingName SettingValue"';
         } else {
             messageBox.textContent = 'Unrecognized command. Try "help"';
             infoBox.textContent = 'Nothing is being drawn';
